@@ -4,14 +4,14 @@ import { toast } from 'react-toastify';
 import PlayerCard from './PlayerCard';
 
 
-function NFTs({ nfts, isConnected, handlePayClick, player, setPlayer, currNft, setCurrNft }) {
+function NFTs({ nfts, isConnected, handlePayClick, player, setPlayer, currNft, setCurrNft, loading }) {
   useEffect(() => {
     document.title = "Video NFTs"
   }, []);
 
   return (
     <>
-      {!nfts && (
+      {loading && (
         <h2 className='text-white font-bold pt-24 text-2xl text-center'>Loading...</h2>
       )}
       {nfts && (
@@ -36,17 +36,16 @@ function NFTs({ nfts, isConnected, handlePayClick, player, setPlayer, currNft, s
               </div>
             </div>
           )}
-          { nfts && 
+          {!loading && nfts && 
             (nfts.length > 0 ?
               nfts.map((item, idx) => (
                 <>
-                {console.log(item)}
                 <Cards item={item} owner={item.owner} setNftitem={setCurrNft} index={idx} player={player} setPlayer={setPlayer} handlePayClick={handlePayClick} />
                 </>
               ))
               :(
                 <main style={{ padding: "1rem 0" }}>
-                  <h2 className='text-white'>No listed assets</h2>
+                  <h2 className='text-white font-bold pt-24 text-2xl text-center'>No listed assets</h2>
                 </main>
               ))}
         </div>

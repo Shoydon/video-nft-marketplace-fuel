@@ -4,14 +4,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import Home from './components/Home';
 import NFTs from './components/NFTs';
-import { marketplace_abi } from "./Abi.js"
 import Create from './components/Create';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 import contractId from "../src/contracts/address.json";
 import jws from "../src/contracts/key.json";
-// import { NftContract } from "./sway-api/contracts/NftContract";
 import { Contract } from 'fuels';
 import {
   useIsConnected,
@@ -74,9 +72,7 @@ function App() {
         // const nftContract = new NftContract(CONTRACT_ID, wallet);
         const nftContract = new Contract(CONTRACT_ID, CONTRACT_ABI, wallet);
         setContract(nftContract);
-        setShouldFetchNfts(true);
-        console.log("contract: ", contract);
-        
+        setShouldFetchNfts(true);        
       }
     }
     getContract();
@@ -87,11 +83,6 @@ function App() {
       if (contract !== null && shouldFetchNfts) {
         try {
           setLoading(true)
-          // setState(prev => ({
-          //   ...prev,
-          //   notification: { message: 'Loading NFTs...', type: 'loading' }
-          // }));
-
           const res = await contract.functions.get_total_count().txParams({ gasLimit: 100_000 }).get();
           const totalCount = new BN(res.value).toNumber();
 
@@ -108,7 +99,6 @@ function App() {
             const mergedNFTData = {
               ...(typeof nftData.value === 'object' ? nftData.value : {}),
               ...(typeof data.data === 'object' ? data.data : {}),
-              // unlocked: unlocked
             };
             nfts.push(mergedNFTData);
 
@@ -116,20 +106,11 @@ function App() {
           setNfts(nfts);
           setShouldFetchNfts(false);
           setLoading(false);
-          // setState(prev => ({ ...prev, nfts, shouldFetchNFTs: false }));
-          // setState(prev => ({
-          //   ...prev,
-          //   notification: { message: 'NFTs loaded', type: 'success' }
-          // }));
         } catch (error) {
           console.error('Error fetching NFTs:', error);
           toast.error("Error fetching NFTs", {
             position: "top-center"
           })
-          // setState(prev => ({
-          //   ...prev,
-          //   notification: { message: 'Error fetching NFTs', type: 'error' }
-          // }));
         }
       }
     }
@@ -158,14 +139,8 @@ function App() {
           position: "top-center"
         });
         setShouldFetchNfts(true);
-        // setState(prev => ({
-        //   ...prev,
-        //   notification: { message: 'Minting successful!', type: 'success' },
-        //   shouldFetchNFTs: true 
-        // }));
       }
 
-      // onRouteChange("all-nfts");
       window.location.href = "/"
 
     } catch (error) {
@@ -173,10 +148,6 @@ function App() {
       toast.error('Error minting NFT:', {
         position: "top-center"
       });
-      // setState(prev => ({
-      //   ...prev,
-      //   notification: { message: 'Error minting NFT', type: 'error' }
-      // }));
     }
   };
 
@@ -226,19 +197,11 @@ function App() {
           position: "top-center"
         })
         res = wait.transactionResult.isStatusSuccess;
-        // setState(prev => ({
-        //   ...prev,
-        //   notification: { message: 'Please wait and do not reload or change tab or pages', type: 'success' }
-        // }));
       } catch (e) {
         console.log("error", e);
         toast.error('Payment Failed', {
           position: "top-center"
         })
-        // setState(prev => ({
-        //   ...prev,
-        //   notification: { message: "Failed", type: 'error' }
-        // }));
       }
     }
     if (res) {
@@ -258,7 +221,7 @@ function App() {
     }
   }
   const onConnect = async () => {
-    connect("Fuel Wallet");
+    connect();
   };
 
 
@@ -270,7 +233,7 @@ function App() {
           <Nav account={account} connect={onConnect} isConnected={isConnected} isInstalled={isInstalled} />
           <Routes>
             <Route path="/" element={<Home />}></Route>
-            <Route path="/all-nft" element={<NFTs nfts={nfts} isConnected={isConnected} handlePayClick={handlePayClick} player={player} setPlayer={setPlayer} currNft={nftItem} setCurrNft={setNftItem}/>}></Route>
+            <Route path="/all-nft" element={<NFTs nfts={nfts} isConnected={isConnected} handlePayClick={handlePayClick} player={player} setPlayer={setPlayer} currNft={nftItem} setCurrNft={setNftItem} loading={loading}/>}></Route>
             <Route path="/create" element={<Create uploadToPinata={uploadToPinata} mintNFT={mintNFT} />}></Route>
           </Routes>
         </div>

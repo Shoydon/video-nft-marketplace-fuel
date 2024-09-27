@@ -14,13 +14,11 @@ function Cards({ item, buyMarketItem, player, handlePayClick }) {
       <div className="card-div">
         <div className='card-inner p-2'>
         {item?.thumbnail ? (
-            // {if }
             <img src={item.thumbnail} alt={item.name} className='object-cover w-[230px] h-[230px] rounded overflow-hidden' />
           ):(
             <img src={fuelLogo1} alt="" className="object-cover w-[270px] h-[230px] rounded overflow-hidden" />
           )}
           <div className='flex flex-col justify-center items-center'>
-            {/* <h3 className='text-white text-2xl font-thin mt-3'>{item.name}</h3> */}
             <div className='card-content'>
               <h1 className='text-white text-3xl mt-3'><strong>{item.name}</strong></h1>
               <h4 className='text-white mx-2 mt-2'>{item.description}</h4>
